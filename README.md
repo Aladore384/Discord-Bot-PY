@@ -46,24 +46,27 @@ I made room for a tracking system to check new arrivals and departures. These wi
 
 ---
 
-- !help | Shows this message | !help [command]
-- !invite | Create an invite link | !invite 
-- !say | Send a message | !say [channel_or_message]... <message>
-- !edit | Edit a message | !edit <message_id> <new_content>
-- !clear | Clear messages | !clear <amount>
+- help | Shows this message | help (command)
+- invite | Create an invite link | invite
 
-- !timeout | Timeout a user | !timeout <member> [duration=60m] [reason]
-- !kick | Kick a member | !kick <member>
-- !ban | Ban a member | !ban <member>
-- !unban | Unban a member | !unban <member_input>
+- say | Send a message | say (channel) [message]
+- edit | Edit a message | edit edit [message_id] [new_content]
+- clear | Clear messages | clear [amount]
 
-- !autorole | Manage autoroles | !autorole [subcommands]
-- !reactrole | Manage reactroles | !reactrole [subcommands]
-- !score | Manage score | !score [subcommands]
+- timeout | Timeout a member | timeout OR to [@member] (duration) (reason)
+- kick | Kick a member | kick (@member)
+- ban | Ban a member | ban (@member)
+- unban | Unban a member | unban [member_input]
 
-- !avatar | Display member avatar | !avatar [user]
-- !duel | Watch a duel between two members | !duel <attacker> <defender>
-- !love | Check love compatibility two members | !love <member_1> <member_2>
-- !rate | Rating for anything | !rate <thing_to_rate>
+- autorole | Manage autoroles | autorole [subcommand]
+- reactrole | Manage reactroles | reactrole [subcommand]
+- score | Manage score | score [subcommand]
+
+- avatar | Display member avatar | avatar (@member)
+- duel | Watch a duel between two members | duel [@member1] [@member2]
+- love | Check love compatibility two members | love [@member1] [@member2]
+- rate | Rating for anything | rate <anything>
 
 ---
+
+XXX
