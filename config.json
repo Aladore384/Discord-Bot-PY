@@ -1,0 +1,38 @@
+{
+    "bot": {
+        "token": "your_token",
+        "prefix": "!",
+		"server": 123456
+    },
+    "activity": {
+        "type": "playing",
+        "name": "🎮",
+        "start": "1970-01-01",
+        "assets": {
+            "large_image": "your_image_key",
+            "large_text": "🎮"
+        }
+    },
+    "channels": {
+        "invite": 123456,
+        "joinlogs": 123456
+    },
+    "score": {        
+        "reward": 1,
+        "daily": 8,
+        "threshold": 256,
+        "limit": 512,        
+        "passive_role": 123456,
+        "active_role": 123456
+    },
+    "email": {        
+		"UNVERIFIED_ROLE_ID": 123456,
+		"VERIFIED_ROLE_ID": 123456,
+		"EMAIL_NAME": "your_email_name",
+		"EMAIL_ADDRESS": "your_email_address",
+		"EMAIL_PASSWORD": "your_email_password",
+		"SMTP_SERVER": "your_smtp_server",
+		"SMTP_PORT": 587,
+		"ALLOWED_DOMAIN": ["your_allowed_domain1.com", "your_allowed_domain2.com", "your_allowed_domain3.com"]
+    }
+}
