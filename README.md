@@ -1,4 +1,4 @@
-EZ Discord Bot
+Discord Bot PY
 
 This is a Discord Bot offering basic moderation, role management and fun features.
 
