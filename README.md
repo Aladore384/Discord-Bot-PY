@@ -14,7 +14,9 @@ I am posting it here for two reasons:
 
 Dependencies
 
-XXX
+asyncio
+aiohttp
+Pillow
 
 ---
 
@@ -26,3 +28,7 @@ For now, things that do work: type, and name.
 I already made room for future updates: assets with game icon and icon text.
 I also included code for start time: in main.py I hardcoded to "now": datetime.datetime.utcnow().isoformat().
 But in the config.json, I made room for a "start" time as well, so you can replace datetime.datetime.utcnow().isoformat() with config['activity']['start'].
+
+---
+
+XXX
