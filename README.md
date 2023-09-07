@@ -46,21 +46,24 @@ I made room for a tracking system to check new arrivals and departures. These wi
 
 ---
 
-!help | Shows this message | !help [command]
-!invite | Create an invite link | !invite 
-!say | Send a message | !say [channel_or_message]... <message>
-!edit | Edit a message | !edit <message_id> <new_content>
-!clear | Clear messages | !clear <amount>
-!timeout | Timeout a user | !timeout <member> [duration=60m] [reason]
-!kick | Kick a member | !kick <member>
-!ban | Ban a member | !ban <member>
-!unban | Unban a member | !unban <member_input>
-!autorole | Manage autoroles | !autorole [subcommands]
-!reactrole | Manage reactroles | !reactrole [subcommands]
-!score | Manage score | !score [subcommands]
-!avatar | Display member avatar | !avatar [user]
-!duel | Watch a duel between two members | !duel <attacker> <defender>
-!love | Check love compatibility two members | !love <member_1> <member_2>
-!rate | Rating for anything | !rate <thing_to_rate>
+- !help | Shows this message | !help [command]
+- !invite | Create an invite link | !invite 
+- !say | Send a message | !say [channel_or_message]... <message>
+- !edit | Edit a message | !edit <message_id> <new_content>
+- !clear | Clear messages | !clear <amount>
+
+- !timeout | Timeout a user | !timeout <member> [duration=60m] [reason]
+- !kick | Kick a member | !kick <member>
+- !ban | Ban a member | !ban <member>
+- !unban | Unban a member | !unban <member_input>
+
+- !autorole | Manage autoroles | !autorole [subcommands]
+- !reactrole | Manage reactroles | !reactrole [subcommands]
+- !score | Manage score | !score [subcommands]
+
+- !avatar | Display member avatar | !avatar [user]
+- !duel | Watch a duel between two members | !duel <attacker> <defender>
+- !love | Check love compatibility two members | !love <member_1> <member_2>
+- !rate | Rating for anything | !rate <thing_to_rate>
 
 ---
