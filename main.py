@@ -453,7 +453,7 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
 
         custom_command_order = [
             "help", "invite", "say", "edit", "clear", "timeout", "kick", "ban", "unban",
-            "autorole", "reactrole", "score", "avatar", "duel", "love", "rate"
+            "autorole", "reactrole", "score", "verify", "code", "avatar", "duel", "love", "rate"
         ]
 
         command_list = []
