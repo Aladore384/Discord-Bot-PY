@@ -61,6 +61,8 @@ I made room for a tracking system to check new arrivals and departures. These wi
 - autorole | Manage autoroles | autorole [subcommand]
 - reactrole | Manage reactroles | reactrole [subcommand]
 - score | Manage score | score [subcommand]
+- verify | Verify email address | verify [email_address]
+- code | Input verification code | code [verification_code]
 
 - avatar | Display member avatar | avatar (@member)
 - duel | Watch a duel between two members | duel [@member1] [@member2]
