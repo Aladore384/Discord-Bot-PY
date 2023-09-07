@@ -78,7 +78,7 @@ PREFIX = config["bot"]["prefix"]
 # -------------------------------------------------------------------------------------------------
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix=config['bot']['prefix'], intents=intents)
+bot = commands.Bot(command_prefix=(PREFIX), intents=intents)
 
 # -------------------------------------------------------------------------------------------------
 # Event: Bot ready
