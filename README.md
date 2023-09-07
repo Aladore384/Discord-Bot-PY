@@ -29,4 +29,38 @@ But in the config.json, I made room for a "start" time as well, so you can repla
 
 ---
 
-XXX
+User Score and Role
+
+One of the main features is to register a score for each member, and update their roles accordingly. You have to define a passive and an active role for this to work, and then copy their IDs into config.json. While in config.json, you can also change the default options if you will.
+
+- reward is the amount of points you give to a member each time they post a message,
+- daily is the amount of points everyone will lose everyday except for those who reached the limit,
+- threshold is the amount of points needed to be granted the active role,
+- limit is the maximum amount of points a member can have.
+
+---
+
+Joinlogs
+
+I made room for a tracking system to check new arrivals and departures. These will be logged into your "joinlogs" channel (which I recommend making Admin only).
+
+---
+
+!help | Shows this message | !help [command]
+!invite | Create an invite link | !invite 
+!say | Send a message | !say [channel_or_message]... <message>
+!edit | Edit a message | !edit <message_id> <new_content>
+!clear | Clear messages | !clear <amount>
+!timeout | Timeout a user | !timeout <member> [duration=60m] [reason]
+!kick | Kick a member | !kick <member>
+!ban | Ban a member | !ban <member>
+!unban | Unban a member | !unban <member_input>
+!autorole | Manage autoroles | !autorole [subcommands]
+!reactrole | Manage reactroles | !reactrole [subcommands]
+!score | Manage score | !score [subcommands]
+!avatar | Display member avatar | !avatar [user]
+!duel | Watch a duel between two members | !duel <attacker> <defender>
+!love | Check love compatibility two members | !love <member_1> <member_2>
+!rate | Rating for anything | !rate <thing_to_rate>
+
+---
