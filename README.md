@@ -14,9 +14,7 @@ I am posting it here for two reasons:
 
 Dependencies
 
-asyncio
-aiohttp
-Pillow
+asyncio, aiohttp, Pillow
 
 ---
 
