@@ -65,7 +65,7 @@ I made room for a tracking system to check new arrivals and departures. These wi
 - avatar | Display member avatar | avatar (@member)
 - duel | Watch a duel between two members | duel [@member1] [@member2]
 - love | Check love compatibility two members | love [@member1] [@member2]
-- rate | Rating for anything | rate <anything>
+- rate | Rating for anything | rate (anything)
 
 ---
 
