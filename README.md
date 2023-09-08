@@ -71,4 +71,8 @@ I made room for a tracking system to check new arrivals and departures. These wi
 
 ---
 
-XXX
+Duel & Love
+
+I added an option in config.json named "interactions" which are set to "true" by default. It means that the bot can be used for duel and love commands. If you set it to "false", it will instead send duel_refuse.gif or love_refuse.gif.
+
+For assets: duel_refuse.gif, love_refuse.gif, duel_background.jpg, love_background.jpg, you can replace them with your own images. Provided ones are merely placeholders.
