@@ -253,19 +253,19 @@ async def on_member_remove(member):
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        leave_message = None
+        remove_message = None
 
         async for entry in member.guild.audit_logs(limit=1):
             if entry.target == member:
                 if entry.action == discord.AuditLogAction.kick:
-                    leave_message = f"{member.mention} was kicked."
+                    remove_message = f"{member.mention} was kicked."
                 elif entry.action == discord.AuditLogAction.ban:
-                    leave_message = f"{member.mention} was banned."
+                    remove_message = f"{member.mention} was banned."
                 break
-        if not leave_message:
-            leave_message = f"{member.mention} left."
+        if not remove_message:
+            remove_message = f"{member.mention} left."
 
-        await joinlogs_channel.send(leave_message)
+        await joinlogs_channel.send(remove_message)
 
 # Member Unbanned ---------------------------------------------------------------------------------
 
@@ -1108,6 +1108,15 @@ async def duel(ctx, attacker: discord.Member, defender: discord.Member):
 
     """Watch a duel between two members"""
 
+    bot_member = ctx.guild.get_member(bot.user.id)
+    if bot_member in [attacker, defender]:
+        duelist = config.get("interactions", {}).get("duelist", False)
+
+        if not duelist:
+            with open('duel_refuse.gif', 'rb') as duel_refuse:
+                await ctx.send(file=discord.File(duel_refuse))
+            return
+
     async with aiohttp.ClientSession() as session:
 
         background = Image.open("duel_background.jpg")
@@ -1195,6 +1204,14 @@ async def duel(ctx, attacker: discord.Member, defender: discord.Member):
 async def love(ctx, member_1: discord.Member, member_2: discord.Member):
 
     """Check love compatibility two members"""
+
+    bot_member = ctx.guild.get_member(bot.user.id)
+    if bot_member in [member_1, member_2]:
+        lover = config.get("interactions", {}).get("lover", False)
+        if not lover:
+            with open('love_refuse.gif', 'rb') as love_refuse:
+                await ctx.send(file=discord.File(love_refuse))
+            return
 
     async with aiohttp.ClientSession() as session:
 
