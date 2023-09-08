@@ -35,6 +35,10 @@
 		"SMTP_PORT": 587,
 		"ALLOWED_DOMAIN": ["your_allowed_domain1.com", "your_allowed_domain2.com", "your_allowed_domain3.com"]
     },
+    "interactions": {
+        "duelist": true,
+        "lover": true
+    },
     "love": {
         "love_spot_text": [
             "Hotel by the ocean",
