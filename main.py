@@ -1236,69 +1236,11 @@ async def love(ctx, member_1: discord.Member, member_2: discord.Member):
         love_meter = "♥" * love_points
 
         love_spot = random.randint(0, 8)
-        love_spot_text = ""
-
-        if love_spot == 0:
-            love_spot_text = "Hotel by the ocean"
-        elif love_spot == 1:
-            love_spot_text = "Secret area"
-        elif love_spot == 2:
-            love_spot_text = "Piano bar in the night"
-        elif love_spot == 3:
-            love_spot_text = "Stage by the sun panels"
-        elif love_spot == 4:
-            love_spot_text = "Basketball court in the snow"
-        elif love_spot == 5:
-            love_spot_text = "Mall in a futuristic city"
-        elif love_spot == 6:
-            love_spot_text = "Cabin in outer space"
-        elif love_spot == 7:
-            love_spot_text = "Meadow near the lighthouse"
-        elif love_spot == 8:
-            love_spot_text = "Island lost faraway"
+        love_spot_text = config["love"]["love_spot_text"][love_spot]
 
         love_compatibility = random.randint(0, 8)
-        love_compatibility_text_1 = ""
-
-        if love_compatibility == 0:
-            love_compatibility_text_1 = "An intense love, like a meteor."
-        elif love_compatibility == 1:
-            love_compatibility_text_1 = "An honest, pure relationship."
-        elif love_compatibility == 2:
-            love_compatibility_text_1 = "A deep love, beyond time or dimension"
-        elif love_compatibility == 3:
-            love_compatibility_text_1 = "A carefree love."
-        elif love_compatibility == 4:
-            love_compatibility_text_1 = "A love that will overcome any obstacle."
-        elif love_compatibility == 5:
-            love_compatibility_text_1 = "The more you meet, the more you love."
-        elif love_compatibility == 6:
-            love_compatibility_text_1 = "A love filled with affection and kindness."
-        elif love_compatibility == 7:
-            love_compatibility_text_1 = "A discreet love that burns slowly."
-        elif love_compatibility == 8:
-            love_compatibility_text_1 = "A burning love unnoticed by others."
-
-        love_compatibility_text_2 = ""
-
-        if love_compatibility == 0:
-            love_compatibility_text_2 = "Have an open feeling about falling in love."
-        elif love_compatibility == 1:
-            love_compatibility_text_2 = "Enjoy long, relaxing hours together."
-        elif love_compatibility == 2:
-            love_compatibility_text_2 = "The love you feel is comforting."
-        elif love_compatibility == 3:
-            love_compatibility_text_2 = "An ideal relationship for you both."
-        elif love_compatibility == 4:
-            love_compatibility_text_2 = "You will always be on the same wavelength."
-        elif love_compatibility == 5:
-            love_compatibility_text_2 = "A relationship unlike any other."
-        elif love_compatibility == 6:
-            love_compatibility_text_2 = "All your needs will be fulfilled."
-        elif love_compatibility == 7:
-            love_compatibility_text_2 = "Don't question each other's feelings."
-        elif love_compatibility == 8:
-            love_compatibility_text_2 = "Don't move too fast, or else..."
+        love_compatibility_text_1 = config["love"]["love_compatibility_text_1"][love_compatibility]
+        love_compatibility_text_2 = config["love"]["love_compatibility_text_2"][love_compatibility]
 
         text_image = Image.new("RGBA", (result_image.width, result_image.height), (0, 0, 0, 0))
         text_draw = ImageDraw.Draw(text_image)
@@ -1369,22 +1311,16 @@ async def verify(ctx, email: str):
             return
 
         code = str(random.randint(0, 999999)).zfill(6)
-
         user_id = str(ctx.author.id)
-        codes = {}
-        try:
-            with open('codes.json', 'r', encoding='utf-8') as codes_file:
-                codes = json.load(codes_file)
-        except FileNotFoundError:
-            pass
-
+        
+        codes = data.get("codes", {})
         codes[user_id] = {
             'code': code,
             'expiration': time.time() + 1800
         }
-
-        with open('codes.json', 'w', encoding='utf-8') as codes_file:
-            json.dump(codes, codes_file, indent=4)
+        data["codes"] = codes
+        
+        save_data(data)
 
         msg = EmailMessage()
         msg['Subject'] = f'Discord Verification Code: {code}'
@@ -1433,18 +1369,11 @@ async def schedule_cleanup(user_id, code):
 
     try:
         await asyncio.sleep(1800)
-
-        codes = {}
-
-        with open('codes.json', 'r', encoding='utf-8') as codes_file:
-            codes = json.load(codes_file)
-
+        codes = data.get("codes", {})
         if user_id in codes and codes[user_id]['code'] == code:
             codes.pop(user_id)
-
-            with open('codes.json', 'w', encoding='utf-8') as codes_file:
-                json.dump(codes, codes_file, indent=4)
-
+            data["codes"] = codes
+            save_data(data)
     except Exception as error:
         print(f"An error occurred during cleanup: {error}")
 
@@ -1466,13 +1395,8 @@ async def code(ctx, user_code: str):
 
         if unverified_role in member.roles:
             user_id = str(member.id)
-            codes = {}
-            try:
-                with open('codes.json', 'r', encoding='utf-8') as codes_file:
-                    codes = json.load(codes_file)
-            except FileNotFoundError:
-                pass
-
+            
+            codes = data.get("codes", {})
             user_data = codes.get(user_id)
 
             if user_data is not None:
@@ -1488,8 +1412,8 @@ async def code(ctx, user_code: str):
                     await asyncio.sleep(5)
                     await timeout_message.delete()
                     codes.pop(user_id, None)
-                    with open('codes.json', 'w') as codes_file:
-                        json.dump(codes, codes_file, indent=4)
+                    data["codes"] = codes
+                    save_data(data)
                 else:
                     await ctx.send("Invalid code or code has expired. Please check and try again.")
             else:
