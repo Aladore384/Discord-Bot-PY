@@ -34,5 +34,40 @@
 		"SMTP_SERVER": "your_smtp_server",
 		"SMTP_PORT": 587,
 		"ALLOWED_DOMAIN": ["your_allowed_domain1.com", "your_allowed_domain2.com", "your_allowed_domain3.com"]
+    },
+    "love": {
+        "love_spot_text": [
+            "Hotel by the ocean",
+            "Secret area",
+            "Piano bar in the night",
+            "Stage by the sun panels",
+            "Basketball court in the snow",
+            "Mall in a futuristic city",
+            "Cabin in outer space",
+            "Meadow near the lighthouse",
+            "Island lost faraway"
+        ],
+        "love_compatibility_text_1": [
+            "An intense love, like a meteor.",
+            "An honest, pure relationship.",
+            "A deep love, beyond time or dimension",
+            "A carefree love.",
+            "A love that will overcome any obstacle.",
+            "The more you meet, the more you love.",
+            "A love filled with affection and kindness.",
+            "A discreet love that burns slowly.",
+            "A burning love unnoticed by others."
+        ],
+        "love_compatibility_text_2": [
+            "Have an open feeling about falling in love.",
+            "Enjoy long, relaxing hours together.",
+            "The love you feel is comforting.",
+            "An ideal relationship for you both.",
+            "You will always be on the same wavelength.",
+            "A relationship unlike any other.",
+            "All your needs will be fulfilled.",
+            "Don't question each other's feelings.",
+            "Don't move too fast, or else..."
+        ]
     }
 }
