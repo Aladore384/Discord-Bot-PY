@@ -794,13 +794,13 @@ async def unban(ctx, member_input):
 
     try:
         await ctx.guild.unban(banned_member)
-        await ctx.send(f"{banned_member.name} has been unbanned.")
+        await ctx.send(f"{banned_member.mention} has been unbanned.")
 
     except discord.Forbidden:
-        await ctx.send(f"Cannot unban {banned_member.name}.")
+        await ctx.send(f"Cannot unban {banned_member.mention}.")
 
     except discord.HTTPException:
-        await ctx.send(f"Error trying to unban {banned_member.name}.")
+        await ctx.send(f"Error trying to unban {banned_member.mention}.")
 
 # -------------------------------------------------------------------------------------------------
 # Command: Autorole
