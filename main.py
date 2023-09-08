@@ -242,7 +242,7 @@ async def on_member_join(member):
         join_message = f"{member.mention} joined."
         await joinlogs_channel.send(join_message)
 
-# Member Remove -------------------------------------------------------------------------------------
+# Member Remove -----------------------------------------------------------------------------------
 
 @bot.event
 async def on_member_remove(member):
