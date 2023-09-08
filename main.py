@@ -242,48 +242,30 @@ async def on_member_join(member):
         join_message = f"{member.mention} joined."
         await joinlogs_channel.send(join_message)
 
-# Member Left -------------------------------------------------------------------------------------
+# Member Remove -------------------------------------------------------------------------------------
 
 @bot.event
 async def on_member_remove(member):
 
-    """Actions on member leaves"""
+    """Actions on member remove"""
 
     joinlogs_channel_id = config['channels']['joinlogs']
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        leave_message = f"{member.display_name} left."
+        leave_message = None
+
+        async for entry in member.guild.audit_logs(limit=1):
+            if entry.target == member:
+                if entry.action == discord.AuditLogAction.kick:
+                    leave_message = f"{member.mention} was kicked."
+                elif entry.action == discord.AuditLogAction.ban:
+                    leave_message = f"{member.mention} was banned."
+                break
+        if not leave_message:
+            leave_message = f"{member.mention} left."
+
         await joinlogs_channel.send(leave_message)
-
-# Member Kicked -----------------------------------------------------------------------------------
-
-@bot.event
-async def on_member_kick(member):
-
-    """Actions on member kicked"""
-
-    joinlogs_channel_id = config['channels']['joinlogs']
-    joinlogs_channel = bot.get_channel(joinlogs_channel_id)
-
-    if joinlogs_channel:
-        # Send a kick message to the joinlogs channel
-        kick_message = f"{member.display_name} kicked."
-        await joinlogs_channel.send(kick_message)
-
-# Member Banned -----------------------------------------------------------------------------------
-
-@bot.event
-async def on_member_ban(guild, user):
-
-    """Actions on member banned"""
-
-    joinlogs_channel_id = config['channels']['joinlogs']
-    joinlogs_channel = bot.get_channel(joinlogs_channel_id)
-
-    if joinlogs_channel:
-        ban_message = f"{user.display_name} banned."
-        await joinlogs_channel.send(ban_message)
 
 # Member Unbanned ---------------------------------------------------------------------------------
 
@@ -296,7 +278,7 @@ async def on_member_unban(guild, user):
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        unban_message = f"{user.display_name} unbanned."
+        unban_message = f"{user.mention} unbanned."
         await joinlogs_channel.send(unban_message)
 
 # -------------------------------------------------------------------------------------------------
