@@ -596,7 +596,9 @@ async def edit(ctx, message_id: int, *, new_content):
         except discord.NotFound:
             pass
 
-    await ctx.send("Message not found in any channel.")
+    timeout_message = await ctx.send("Message not found in any channel.")
+    await asyncio.sleep(5)
+    await timeout_message.delete()
 
 # -------------------------------------------------------------------------------------------------
 # Command: Clear
