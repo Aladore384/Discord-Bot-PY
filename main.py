@@ -613,7 +613,9 @@ async def clear(ctx, amount: int):
     await ctx.message.delete()
 
     if amount <= 0:
-        await ctx.send("Please provide a valid number of messages to clear.")
+        timeout_message = await ctx.send("Please provide a valid number of messages to clear.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     deleted = await ctx.channel.purge(limit=amount)
@@ -630,6 +632,8 @@ async def avatar(ctx, user: discord.Member=None):
 
     """Display member avatar"""
 
+    await ctx.message.delete()
+
     if user is None:
         user = ctx.author
 
@@ -642,7 +646,9 @@ async def avatar(ctx, user: discord.Member=None):
         await ctx.send(avatar_url)
 
     else:
-        await ctx.send("This user does not have an avatar set!")
+        timeout_message = await ctx.send("This user does not have an avatar set!")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
 
 # -------------------------------------------------------------------------------------------------
 # Command: Timeout
@@ -669,10 +675,13 @@ async def timeout(ctx, member: discord.Member, duration: str = '60m', *, reason:
     if unit in units:
         timeout_seconds = numeric_duration * units[unit]
     else:
-        await ctx.send(
+        await ctx.message.delete()
+        timeout_message = await ctx.send(
             "Invalid duration unit. Use 'd' (days), 'h' (hours), "
             "'m' (minutes), or 's' (seconds)."
         )
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     combined_duration = re.findall(r'(\d+[dhms])', duration)
@@ -685,7 +694,10 @@ async def timeout(ctx, member: discord.Member, duration: str = '60m', *, reason:
     max_duration = datetime.timedelta(days=7)
 
     if datetime.timedelta(seconds=total_seconds) > max_duration:
-        await ctx.send("Duration too long!")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Duration too long!")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     timeout = datetime.timedelta(seconds=total_seconds)
@@ -716,10 +728,18 @@ async def timeout(ctx, member: discord.Member, duration: str = '60m', *, reason:
         await ctx.send(message)
 
     except discord.Forbidden:
-        await ctx.send(f"Cannot time out {member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Cannot time out {member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
     except discord.HTTPException:
-        await ctx.send(f"Error trying to time out {member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Error trying to time out {member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # -------------------------------------------------------------------------------------------------
 # Command: Kick
@@ -736,10 +756,18 @@ async def kick(ctx, member: discord.Member):
         await ctx.send(f"{member.mention} has been kicked.")
 
     except discord.Forbidden:
-        await ctx.send(f"Cannot kick {member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Cannot kick {member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
     except discord.HTTPException:
-        await ctx.send(f"Error trying to kick {member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Error trying to kick {member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # -------------------------------------------------------------------------------------------------
 # Command: Ban
@@ -756,10 +784,18 @@ async def ban(ctx, member: discord.Member):
         await ctx.send(f"{member.mention} has been banned.")
 
     except discord.Forbidden:
-        await ctx.send(f"Cannot ban {member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Cannot ban {member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
     except discord.HTTPException:
-        await ctx.send(f"Error trying to ban {member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Error trying to ban {member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # -------------------------------------------------------------------------------------------------
 # Command: Unban
@@ -785,13 +821,19 @@ async def unban(ctx, member_input):
         banned_users.append(entry.user.id)
 
     if int(member_id) not in banned_users:
-        await ctx.send("User not banned.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("User not banned.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     try:
         banned_member = await bot.fetch_user(int(member_id))
     except discord.NotFound:
-        await ctx.send("User not found.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("User not found.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     try:
@@ -799,10 +841,18 @@ async def unban(ctx, member_input):
         await ctx.send(f"{banned_member.mention} has been unbanned.")
 
     except discord.Forbidden:
-        await ctx.send(f"Cannot unban {banned_member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Cannot unban {banned_member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
     except discord.HTTPException:
-        await ctx.send(f"Error trying to unban {banned_member.mention}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Error trying to unban {banned_member.mention}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # -------------------------------------------------------------------------------------------------
 # Command: Autorole
@@ -815,7 +865,11 @@ async def autorole(ctx):
     """Manage autoroles"""
 
     if ctx.invoked_subcommand is None:
-        await ctx.send("Invalid subcommand. Use `add`, `remove`, `list`, or `clear`.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Invalid subcommand.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # Subcommand: add ---------------------------------------------------------------------------------
 
@@ -828,7 +882,10 @@ async def add(ctx, *roles: discord.Role):
 
     for role in roles:
         if role.id in autoroles:
-            await ctx.send(f"Role {role.mention} is already in autoroles.")
+            await ctx.message.delete()
+            timeout_message = await ctx.send(f"Role {role.mention} is already in autoroles.")
+            await asyncio.sleep(5)
+            await timeout_message.delete()
         else:
             autoroles.append(role.id)
             save_data(data)
@@ -849,7 +906,10 @@ async def remove(ctx, *roles: discord.Role):
             save_data(data)
             await ctx.send(f"Role {role.mention} removed from autoroles.")
         else:
-            await ctx.send(f"Role {role.mention} not found in autoroles.")
+            await ctx.message.delete()
+            timeout_message = await ctx.send(f"Role {role.mention} not found in autoroles.")
+            await asyncio.sleep(5)
+            await timeout_message.delete()
 
 # Subcommand: list --------------------------------------------------------------------------------
 
@@ -896,7 +956,11 @@ async def reactrole(ctx):
     """Manage reactroles"""
 
     if ctx.invoked_subcommand is None:
-        await ctx.send("Invalid subcommand passed.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Invalid subcommand.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # Subcommand: link --------------------------------------------------------------------------------
 
@@ -909,7 +973,10 @@ async def link(ctx, role: discord.Role, emoji: str):
 
     for reactlink in reactlinks:
         if reactlink['reactrole'] == role.id or reactlink['reactemoji'] == emoji:
-            await ctx.send("Role or emoji already exists in data.")
+            await ctx.message.delete()
+            timeout_message = await ctx.send("Role or emoji already exists in data.")
+            await asyncio.sleep(5)
+            await timeout_message.delete()
             return
 
     reactlinks.append({
@@ -932,7 +999,10 @@ async def unlink(ctx, role: discord.Role):
 
     role_exists = any(reactlink['reactrole'] == role.id for reactlink in reactlinks)
     if not role_exists:
-        await ctx.send("Role does not exist in reactlinks.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Role does not exist in reactlinks.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     data['roles']['reactlinks'] = [
@@ -1018,7 +1088,10 @@ async def _handle_reactrole(ctx, roles, allow_multi):
     invalid_roles = [role.id for role in roles if role.id not in valid_roles]
 
     if invalid_roles:
-        await ctx.send("One or more provided roles are not eligible for reactlinks.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Some provided roles are not eligible for reactlinks.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     message_type = "multi" if allow_multi else "mono"
@@ -1057,7 +1130,11 @@ async def score_group(ctx):
     """Manage score"""
 
     if ctx.invoked_subcommand is None:
-        await ctx.send('Invalid score command. Use `score set` or `score view`.')
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Invalid subcommand.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+        return
 
 # Subcommand: set ---------------------------------------------------------------------------------
 
@@ -1068,13 +1145,19 @@ async def set_score(ctx, member: discord.Member, points: int):
     """Set member score"""
 
     if points < 0:
-        await ctx.send("Points must be a positive value.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send("Points must be a positive value.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     limit = config["score"]["limit"]
 
     if points > limit:
-        await ctx.send(f"Points cannot exceed {limit}.")
+        await ctx.message.delete()
+        timeout_message = await ctx.send(f"Points cannot exceed {limit}.")
+        await asyncio.sleep(5)
+        await timeout_message.delete()
         return
 
     user_scores = {entry["user"]: entry["points"] for entry in data["score"]}
@@ -1331,14 +1414,14 @@ async def verify(ctx, email: str):
 
         code = str(random.randint(0, 999999)).zfill(6)
         user_id = str(ctx.author.id)
-        
+
         codes = data.get("codes", {})
         codes[user_id] = {
             'code': code,
             'expiration': time.time() + 1800
         }
         data["codes"] = codes
-        
+
         save_data(data)
 
         msg = EmailMessage()
@@ -1414,7 +1497,7 @@ async def code(ctx, user_code: str):
 
         if unverified_role in member.roles:
             user_id = str(member.id)
-            
+
             codes = data.get("codes", {})
             user_data = codes.get(user_id)
 
