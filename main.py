@@ -239,7 +239,7 @@ async def on_member_join(member):
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        join_message = f"{member.mention} joined."
+        join_message = f"<@{member.id}> joined."
         await joinlogs_channel.send(join_message)
 
 # Member Remove -----------------------------------------------------------------------------------
@@ -258,12 +258,12 @@ async def on_member_remove(member):
         async for entry in member.guild.audit_logs(limit=1):
             if entry.target == member:
                 if entry.action == discord.AuditLogAction.kick:
-                    remove_message = f"{member.mention} was kicked."
+                    remove_message = f"<@{member.id}> was kicked."
                 elif entry.action == discord.AuditLogAction.ban:
-                    remove_message = f"{member.mention} was banned."
+                    remove_message = f"<@{member.id}> was banned."
                 break
         if not remove_message:
-            remove_message = f"{member.mention} left."
+            remove_message = f"<@{member.id}> left."
 
         await joinlogs_channel.send(remove_message)
 
@@ -278,7 +278,7 @@ async def on_member_unban(guild, user):
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        unban_message = f"{user.mention} unbanned."
+        unban_message = f"<@{user.id}> unbanned."
         await joinlogs_channel.send(unban_message)
 
 # -------------------------------------------------------------------------------------------------
@@ -719,24 +719,24 @@ async def timeout(ctx, member: discord.Member, duration: str = '60m', *, reason:
 
         if reason:
             message = (
-                f"{member.mention} has been timed out for {duration_str}.\n"
+                f"<@{member.id}> has been timed out for {duration_str}.\n"
                 f"Reason: {reason}"
             )
         else:
-            message = f"{member.mention} has been timed out for {duration_str}"
+            message = f"<@{member.id}> has been timed out for {duration_str}"
 
         await ctx.send(message)
 
     except discord.Forbidden:
         await ctx.message.delete()
-        timeout_message = await ctx.send(f"Cannot time out {member.mention}.")
+        timeout_message = await ctx.send(f"Cannot time out <@{member.id}>.")
         await asyncio.sleep(5)
         await timeout_message.delete()
         return
 
     except discord.HTTPException:
         await ctx.message.delete()
-        timeout_message = await ctx.send(f"Error trying to time out {member.mention}.")
+        timeout_message = await ctx.send(f"Error trying to time out <@{member.id}>.")
         await asyncio.sleep(5)
         await timeout_message.delete()
         return
@@ -753,18 +753,18 @@ async def kick(ctx, member: discord.Member):
 
     try:
         await member.kick()
-        await ctx.send(f"{member.mention} has been kicked.")
+        await ctx.send(f"<@{member.id}> has been kicked.")
 
     except discord.Forbidden:
         await ctx.message.delete()
-        timeout_message = await ctx.send(f"Cannot kick {member.mention}.")
+        timeout_message = await ctx.send(f"Cannot kick <@{member.id}>.")
         await asyncio.sleep(5)
         await timeout_message.delete()
         return
 
     except discord.HTTPException:
         await ctx.message.delete()
-        timeout_message = await ctx.send(f"Error trying to kick {member.mention}.")
+        timeout_message = await ctx.send(f"Error trying to kick <@{member.id}>.")
         await asyncio.sleep(5)
         await timeout_message.delete()
         return
@@ -781,18 +781,18 @@ async def ban(ctx, member: discord.Member):
 
     try:
         await member.ban()
-        await ctx.send(f"{member.mention} has been banned.")
+        await ctx.send(f"<@{member.id}> has been banned.")
 
     except discord.Forbidden:
         await ctx.message.delete()
-        timeout_message = await ctx.send(f"Cannot ban {member.mention}.")
+        timeout_message = await ctx.send(f"Cannot ban <@{member.id}>.")
         await asyncio.sleep(5)
         await timeout_message.delete()
         return
 
     except discord.HTTPException:
         await ctx.message.delete()
-        timeout_message = await ctx.send(f"Error trying to ban {member.mention}.")
+        timeout_message = await ctx.send(f"Error trying to ban <@{member.id}>.")
         await asyncio.sleep(5)
         await timeout_message.delete()
         return
@@ -1167,7 +1167,7 @@ async def set_score(ctx, member: discord.Member, points: int):
 
     save_data(data)
 
-    await ctx.send(f"{member.mention} now has {points} points.")
+    await ctx.send(f"<@{member.id}> now has {points} points.")
 
     await role_update()
 
@@ -1182,7 +1182,7 @@ async def view_score(ctx, member: discord.Member):
     user_id = member.id
     points = user_scores.get(user_id, 0)
 
-    await ctx.send(f"{member.mention} has {points} points.")
+    await ctx.send(f"<@{member.id}> has {points} points.")
 
 # -------------------------------------------------------------------------------------------------
 # Command: Duel
@@ -1509,7 +1509,7 @@ async def code(ctx, user_code: str):
                     await member.remove_roles(unverified_role)
                     await member.add_roles(verified_role)
                     timeout_message = await ctx.send(
-                        f"Congratulations, {member.mention}! Your role has been verified."
+                        f"Congratulations, <@{member.id}>! Your role has been verified."
                     )
                     await asyncio.sleep(5)
                     await timeout_message.delete()
