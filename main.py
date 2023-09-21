@@ -239,7 +239,7 @@ async def on_member_join(member):
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        join_message = f"{member.display_name} joined."
+        join_message = f"{member.mention} ({member.display_name}, @{member.id}) joined."
         await joinlogs_channel.send(join_message)
 
 # Member Remove -----------------------------------------------------------------------------------
@@ -258,12 +258,12 @@ async def on_member_remove(member):
         async for entry in member.guild.audit_logs(limit=1):
             if entry.target == member:
                 if entry.action == discord.AuditLogAction.kick:
-                    remove_message = f"{member.display_name} was kicked."
+                    remove_message = f"{member.mention} ({member.display_name}, @{member.id}) was kicked."
                 elif entry.action == discord.AuditLogAction.ban:
-                    remove_message = f"{member.display_name} was banned."
+                    remove_message = f"{member.mention} ({member.display_name}, @{member.id}) was banned."
                 break
         if not remove_message:
-            remove_message = f"{member.display_name} left."
+            remove_message = f"{member.mention} ({member.display_name}, @{member.id}) left."
 
         await joinlogs_channel.send(remove_message)
 
@@ -278,7 +278,7 @@ async def on_member_unban(guild, user):
     joinlogs_channel = bot.get_channel(joinlogs_channel_id)
 
     if joinlogs_channel:
-        unban_message = f"{user.display_name} unbanned."
+        unban_message = f"{user.mention} unbanned."
         await joinlogs_channel.send(unban_message)
 
 # -------------------------------------------------------------------------------------------------
@@ -434,8 +434,12 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
     async def send_bot_help(self, mapping):
 
         custom_command_order = [
-            "help", "invite", "say", "edit", "clear", "timeout", "kick", "ban", "unban",
-            "autorole", "reactrole", "score", "verify", "code", "avatar", "duel", "love", "rate"
+            "help",
+            "invite",
+            "say", "edit", "clear",
+            "timeout", "kick", "ban", "unban",
+            "autorole", "reactrole", "score", "verify", "code",
+            "avatar", "duel", "love", "rate"
         ]
 
         command_list = []
