@@ -1104,7 +1104,7 @@ async def _handle_reactrole(ctx, roles, allow_multi):
 
     message_content = "React to this message to choose your role:\n\n"
     message_content += "\n".join([
-        f"| {emoji} | {ctx.guild.get_role(role_id).mention}"
+        f"| {emoji} | {ctx.guild.get_role(role_id).name}"
         for emoji, role_id in zip(ordered_roles, [role.id for role in roles])
     ])
 
@@ -1187,6 +1187,150 @@ async def view_score(ctx, member: discord.Member):
     points = user_scores.get(user_id, 0)
 
     await ctx.send(f"{member.mention} has {points} points.")
+
+# ----------------------------------------------------------------------------
+# Command: Verify
+# ----------------------------------------------------------------------------
+
+@bot.command()
+async def verify(ctx, email: str):
+
+    """Get verification code"""
+
+    await ctx.message.delete()
+
+    try:
+        verified_role = ctx.guild.get_role(config['email']['VERIFIED_ROLE_ID'])
+        if verified_role in ctx.author.roles:
+            timeout_message = await ctx.send('You are already verified.')
+            await asyncio.sleep(5)
+            await timeout_message.delete()
+            return
+
+        if email.split('@')[-1] not in config['email']['ALLOWED_DOMAIN']:
+            timeout_message = await ctx.send('Domain name is not allowed!')
+            await asyncio.sleep(5)
+            await timeout_message.delete()
+            return
+
+        code = str(random.randint(0, 999999)).zfill(6)
+        user_id = str(ctx.author.id)
+
+        codes = data.get("codes", {})
+        codes[user_id] = {
+            'code': code,
+            'expiration': time.time() + 1800
+        }
+        data["codes"] = codes
+
+        save_data(data)
+
+        msg = EmailMessage()
+        msg['Subject'] = f'Discord Verification Code: {code}'
+        sender_name = config['email']['EMAIL_NAME']
+        sender_email = config['email']['EMAIL_ADDRESS']
+        msg['From'] = f'{sender_name} <{sender_email}>'
+        msg['To'] = email
+
+        msg.set_content(f'''
+        Hello,<br>
+        <br>
+        Your Verification Code is <b>{code}</b>.<br>
+        <br>
+        Use the &lt;!code&gt; command with this code, and your role shall be updated.<br>
+        <br>
+        <code>&lt;!code <b>{code}</b>&gt;</code><br>
+        <br>
+        This code is active for the next 30 minutes.<br>
+        <br>
+        Remember, this is a noreply address.<br>
+        <br>
+        Welcome aboard!<br>
+        <br>
+        Best regards,<br>
+        {sender_name}<br>
+        ''', subtype='html')
+
+        with smtplib.SMTP(config['email']['SMTP_SERVER'], config['email']['SMTP_PORT']) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.login(config['email']['EMAIL_ADDRESS'], config['email']['EMAIL_PASSWORD'])
+            smtp.send_message(msg)
+
+        timeout_message = await ctx.send('Verification code sent!')
+        await asyncio.sleep(5)
+        await timeout_message.delete()
+
+        await schedule_cleanup(user_id, code)
+
+    except Exception as error:
+        print(f"An error occurred: {error}")
+
+async def schedule_cleanup(user_id, code):
+
+    """Cleanup codes"""
+
+    try:
+        await asyncio.sleep(1800)
+        codes = data.get("codes", {})
+        if user_id in codes and codes[user_id]['code'] == code:
+            codes.pop(user_id)
+            data["codes"] = codes
+            save_data(data)
+    except Exception as error:
+        print(f"An error occurred during cleanup: {error}")
+
+# ----------------------------------------------------------------------------
+# Command: Code
+# ----------------------------------------------------------------------------
+
+@bot.command()
+async def code(ctx, user_code: str):
+
+    """Input verification code"""
+
+    await ctx.message.delete()
+
+    try:
+        member = ctx.author
+        unverified_role = ctx.guild.get_role(config['email']['UNVERIFIED_ROLE_ID'])
+        verified_role = ctx.guild.get_role(config['email']['VERIFIED_ROLE_ID'])
+
+        if unverified_role in member.roles:
+            user_id = str(member.id)
+
+            codes = data.get("codes", {})
+            user_data = codes.get(user_id)
+
+            if user_data is not None:
+                stored_code = user_data.get('code')
+                expiration_time = user_data.get('expiration')
+
+                if stored_code == user_code and time.time() < expiration_time:
+                    await member.remove_roles(unverified_role)
+                    await member.add_roles(verified_role)
+                    timeout_message = await ctx.send(
+                        f"Congratulations, {member.mention}! Your role has been verified."
+                    )
+                    await asyncio.sleep(5)
+                    await timeout_message.delete()
+                    codes.pop(user_id, None)
+                    data["codes"] = codes
+                    save_data(data)
+                else:
+                    await ctx.send("Invalid code or code has expired. Please check and try again.")
+            else:
+                timeout_message = await ctx.send(
+                    "No verification data found for you. Please request a new code."
+                )
+                await asyncio.sleep(5)
+                await timeout_message.delete()
+        else:
+            timeout_message = await ctx.send("You are already verified.")
+            await asyncio.sleep(5)
+            await timeout_message.delete()
+    except Exception as error:
+        print(f"An error occurred: {error}")
 
 # -------------------------------------------------------------------------------------------------
 # Command: Duel
@@ -1390,150 +1534,6 @@ async def rate(ctx, *, thing_to_rate):
     meter = "⭐" * rating
 
     await ctx.send(f"*{thing_to_rate}*: **{rating}**/10\n\n{meter}")
-
-# ----------------------------------------------------------------------------
-# Command: Verify
-# ----------------------------------------------------------------------------
-
-@bot.command()
-async def verify(ctx, email: str):
-
-    """Get verification code"""
-
-    await ctx.message.delete()
-
-    try:
-        verified_role = ctx.guild.get_role(config['email']['VERIFIED_ROLE_ID'])
-        if verified_role in ctx.author.roles:
-            timeout_message = await ctx.send('You are already verified.')
-            await asyncio.sleep(5)
-            await timeout_message.delete()
-            return
-
-        if email.split('@')[-1] not in config['email']['ALLOWED_DOMAIN']:
-            timeout_message = await ctx.send('Domain name is not allowed!')
-            await asyncio.sleep(5)
-            await timeout_message.delete()
-            return
-
-        code = str(random.randint(0, 999999)).zfill(6)
-        user_id = str(ctx.author.id)
-
-        codes = data.get("codes", {})
-        codes[user_id] = {
-            'code': code,
-            'expiration': time.time() + 1800
-        }
-        data["codes"] = codes
-
-        save_data(data)
-
-        msg = EmailMessage()
-        msg['Subject'] = f'Discord Verification Code: {code}'
-        sender_name = config['email']['EMAIL_NAME']
-        sender_email = config['email']['EMAIL_ADDRESS']
-        msg['From'] = f'{sender_name} <{sender_email}>'
-        msg['To'] = email
-
-        msg.set_content(f'''
-        Hello,<br>
-        <br>
-        Your Verification Code is <b>{code}</b>.<br>
-        <br>
-        Use the &lt;!code&gt; command with this code, and your role shall be updated.<br>
-        <br>
-        <code>&lt;!code <b>{code}</b>&gt;</code><br>
-        <br>
-        This code is active for the next 30 minutes.<br>
-        <br>
-        Remember, this is a noreply address.<br>
-        <br>
-        Welcome aboard!<br>
-        <br>
-        Best regards,<br>
-        {sender_name}<br>
-        ''', subtype='html')
-
-        with smtplib.SMTP(config['email']['SMTP_SERVER'], config['email']['SMTP_PORT']) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.login(config['email']['EMAIL_ADDRESS'], config['email']['EMAIL_PASSWORD'])
-            smtp.send_message(msg)
-
-        timeout_message = await ctx.send('Verification code sent!')
-        await asyncio.sleep(5)
-        await timeout_message.delete()
-
-        await schedule_cleanup(user_id, code)
-
-    except Exception as error:
-        print(f"An error occurred: {error}")
-
-async def schedule_cleanup(user_id, code):
-
-    """Cleanup codes"""
-
-    try:
-        await asyncio.sleep(1800)
-        codes = data.get("codes", {})
-        if user_id in codes and codes[user_id]['code'] == code:
-            codes.pop(user_id)
-            data["codes"] = codes
-            save_data(data)
-    except Exception as error:
-        print(f"An error occurred during cleanup: {error}")
-
-# ----------------------------------------------------------------------------
-# Command: Code
-# ----------------------------------------------------------------------------
-
-@bot.command()
-async def code(ctx, user_code: str):
-
-    """Input verification code"""
-
-    await ctx.message.delete()
-
-    try:
-        member = ctx.author
-        unverified_role = ctx.guild.get_role(config['email']['UNVERIFIED_ROLE_ID'])
-        verified_role = ctx.guild.get_role(config['email']['VERIFIED_ROLE_ID'])
-
-        if unverified_role in member.roles:
-            user_id = str(member.id)
-
-            codes = data.get("codes", {})
-            user_data = codes.get(user_id)
-
-            if user_data is not None:
-                stored_code = user_data.get('code')
-                expiration_time = user_data.get('expiration')
-
-                if stored_code == user_code and time.time() < expiration_time:
-                    await member.remove_roles(unverified_role)
-                    await member.add_roles(verified_role)
-                    timeout_message = await ctx.send(
-                        f"Congratulations, {member.mention}! Your role has been verified."
-                    )
-                    await asyncio.sleep(5)
-                    await timeout_message.delete()
-                    codes.pop(user_id, None)
-                    data["codes"] = codes
-                    save_data(data)
-                else:
-                    await ctx.send("Invalid code or code has expired. Please check and try again.")
-            else:
-                timeout_message = await ctx.send(
-                    "No verification data found for you. Please request a new code."
-                )
-                await asyncio.sleep(5)
-                await timeout_message.delete()
-        else:
-            timeout_message = await ctx.send("You are already verified.")
-            await asyncio.sleep(5)
-            await timeout_message.delete()
-    except Exception as error:
-        print(f"An error occurred: {error}")
 
 # -------------------------------------------------------------------------------------------------
 # Run the bot
