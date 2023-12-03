@@ -106,7 +106,14 @@ async def on_ready():
         assets=assets
     )
 
-    await bot.change_presence(activity=activity)
+    status_str = config['status']
+
+    if status_str == 'do_not_disturb':
+        status_str = 'dnd'
+
+    status = getattr(discord.Status, status_str, discord.Status.online)
+
+    await bot.change_presence(activity=activity, status=status)
 
     bot.loop.create_task(daily_decrease())
 
