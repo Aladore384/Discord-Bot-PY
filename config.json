@@ -13,6 +13,7 @@
             "large_text": "🎮"
         }
     },
+    "status": "XXX",
     "channels": {
         "invite": 123456,
         "joinlogs": 123456
